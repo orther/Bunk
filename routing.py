@@ -3,6 +3,5 @@ from actions import http_test
 
 # routes
 routes = {
-    "/http_test": ("(controller:\w+)", http_test.HttpTestAction, {"test": "http_test"})
+    "/http_test": ("(test_id:\w+)", http_test.HttpTestAction, {"route_id": "http_test_1"})
 }
-

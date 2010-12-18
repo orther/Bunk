@@ -2,7 +2,7 @@ from bunk.action import BunkAction
 
 class HttpTestAction (BunkAction):
 
-    def __init__ (self, test, **kwargs):
+    def __init__ (self, route_id, **kwargs):
         """
         Create a new ExampleArgsAction instance.
 
@@ -11,7 +11,7 @@ class HttpTestAction (BunkAction):
 
         BunkAction.__init__(self, **kwargs)
 
-        self._test = test
+        self._route_id = route_id
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -22,13 +22,23 @@ class HttpTestAction (BunkAction):
         @param client (HttpClient) The HttpClient instance.
         """
 
-        self.init_db()
+        # initialize and connect to database
+        db     = self.init_db()
+        dbconn = db.get_connection()
+        dbcurs = dbconn.cursor()
 
-        # create test table
-        self.dbcursor.execute("CREATE TABLE test_table (test_table_id INT NOT NULL PRIMARY KEY, value VARCHAR(50) NOT NULL)")
+        # grab records
+        dbcurs.execute("SELECT * FROM test_tables LIMIT 1")
+
+        record = db.fetch_one(dbcurs)
+
+        # close db connection
+        dbcurs.close()
+        dbconn.close()
 
         client.compose_headers()
-        client.write("GET Parameters: " + str(client.params))
+        client.write("GET Parameters: " + str(client.params) + "\n")
+        client.write("DB Result: " + str(record))
         client.flush()
 
     # ------------------------------------------------------------------------------------------------------------------
