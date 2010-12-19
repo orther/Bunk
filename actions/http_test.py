@@ -84,7 +84,7 @@ class HttpTestAction (BunkAction):
         dbconn = db.get_connection()
         dbcurs = dbconn.cursor()
 
-        if "id" in client.params:
+        if "id" in client.params and not client.params["id"] == "":
             # select a single record
             sql_query = HttpTestAction.sql_get_http_test_record % client.params["id"]
 
