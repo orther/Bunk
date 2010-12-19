@@ -3,7 +3,8 @@ from bunk.core.exception import BunkException
 
 class ResponseFormatter:
 
-    def validate_response_data_type (self, response_data_type, supported_data_types):
+    @staticmethod
+    def validate_response_data_type (response_data_type, supported_data_types):
         """
         Check if the reponse_data type is supported by the implemented response formatter and raise a
         ResponseFormatException if it is NOT.
@@ -19,7 +20,8 @@ class ResponseFormatter:
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def format (self, response_data):
+    @staticmethod
+    def format (response_data):
         """
         Format response data with to the set _format.
 

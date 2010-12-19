@@ -51,6 +51,8 @@ class HttpTestAction (BunkAction):
 
         self._route_id = route_id
 
+        self._format = "json"
+
     # ------------------------------------------------------------------------------------------------------------------
 
     def get (self, client):
