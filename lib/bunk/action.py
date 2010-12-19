@@ -61,7 +61,7 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def respond (self, client, response_data, block_formating=False):
+    def respond (self, client, response_data, format_response=True):
         """
         Return a full response to the request including headers and body. Response data is formated using the set
         format.
@@ -69,11 +69,17 @@ class BunkAction (HttpAction):
         @param client (HttpClient)    The HttpClient instance.
         @param response_data   (*)    All data types are accepted. If response_data is of a type not supported by the
                                       response format ResponseFormatException is raised.
-        @param block_formating (bool) If set to True the respopnse data will not be formated by the forma
+        @param format_response (bool) If set to True the respopnse data will be formated by the set ResponseFormatter
         """
 
-        formated_resp = self.format_response_data(response_data)
+        if format_response:
+            # apply response format
+            response = self.format_response_data(response_data)
+
+        else:
+            # do not format
+            response = response_data
 
         client.compose_headers()
-        client.write(formated_resp)
+        client.write(response)
         client.flush()

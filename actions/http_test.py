@@ -6,6 +6,14 @@ class HttpTestAction (BunkAction):
     # SQL
     # ------------------------------------------------------------------------------------------------------------------
 
+    sql_delete_http_test_record = """
+    DELETE FROM http_test
+    WHERE
+        id = %s
+    """
+
+    # ------------------------------------------------------------------------------------------------------------------
+
     sql_get_http_test_record = """
     SELECT
         id, route_id, request_ip, created_at
@@ -51,6 +59,7 @@ class HttpTestAction (BunkAction):
 
         self._route_id = route_id
 
+        # TODO: set this static for now for testing
         self._format = "json"
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -75,27 +84,19 @@ class HttpTestAction (BunkAction):
         dbcurs.close()
         dbconn.close()
 
-        client.compose_headers()
-        client.write("GET Parameters: " + str(client.params) + "\n")
+        response = {"get_params": client.params}
+
+        self.respond(client, response)
+
         #client.write("DB Result: " + str(record))
-        client.flush()
 
     # ------------------------------------------------------------------------------------------------------------------
 
     def post (self, client):
         """
         Handle a POST request
-        """
 
-        client.compose_headers()
-        client.write("POST Parameters: " + str(client.params))
-        client.flush()
-
-    # ------------------------------------------------------------------------------------------------------------------
-
-    def put (self, client):
-        """
-        Handle a PUT request
+        @param client (HttpClient) The HttpClient instance.
         """
 
         # initialize and connect to database
@@ -104,22 +105,67 @@ class HttpTestAction (BunkAction):
         dbcurs = dbconn.cursor()
 
         # insert record
-        sql_params    = {"id":         int(client.params["id"]),
-                         "route_id":   self._route_id,
-                         "request_ip": "Fake For Now"}
+        sql_params = {"id":         "NULL",
+                      "route_id":   self._route_id,
+                      "request_ip": "Fake For Now"}
+
+        try:
+            # attempt to insert new http_test record
+            dbcurs.execute(HttpTestAction.sql_insert_http_test_record % sql_params)
+
+            new_record_id = dbcurs.lastrowid
+            print new_record_id
+
+        except Exception, e:
+            # return sql error details
+            self.respond(client, {"sql_error": e})
+
+            return
+
+        # close db connection
+        dbcurs.close()
+        dbconn.close()
+
+        # return it
+        self.respond(client, new_record_id)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def put (self, client):
+        """
+        Create or update http_test record.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        # initialize and connect to database
+        db     = self.init_db()
+        dbconn = db.get_connection()
+        dbcurs = dbconn.cursor()
+
+        # insert record
+        sql_params = {"id":         int(client.params["id"]),
+                      "route_id":   self._route_id,
+                      "request_ip": "Fake For Now"}
 
         try:
             # attempt to insert new http_test record
             dbcurs.execute(HttpTestAction.sql_insert_http_test_record % sql_params)
 
         except Exception, e:
-            # assume insert failed due to duplicate entry so we update the existing record
-            dbcurs.execute(HttpTestAction.sql_update_http_test_record % sql_params)
+            try:
+                # assume insert failed due to duplicate entry so we update the existing record
+                dbcurs.execute(HttpTestAction.sql_update_http_test_record % sql_params)
+
+            except Exception, e:
+                # return sql error details
+                self.respond(client, {"sql_error": e})
+
+                return
 
         # close db connection
         dbcurs.close()
         dbconn.close()
 
-        response = {"sql_params": sql_params, "request params": client.params}
-
-        self.respond(client, response)
+        # return empty body on success
+        self.respond(client, None, False)
