@@ -14,9 +14,18 @@ class HttpTestAction (BunkAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
+    sql_get_all_http_test_record = """
+    SELECT
+        id, route_id, request_ip, DATE_FORMAT(created_at, '%%H:%%i:%%s %%W %%M %%Y') as created
+    FROM
+        http_test
+    """
+
+    # ------------------------------------------------------------------------------------------------------------------
+
     sql_get_http_test_record = """
     SELECT
-        id, route_id, request_ip, created_at
+        id, route_id, request_ip, DATE_FORMAT(created_at, '%%H:%%i:%%s %%W %%M %%Y') as created_at
     FROM
         http_test
     WHERE
@@ -48,7 +57,7 @@ class HttpTestAction (BunkAction):
     # METHODS
     # ------------------------------------------------------------------------------------------------------------------
 
-    def __init__ (self, route_id, **kwargs):
+    def __init__ (self, route_id=None, **kwargs):
         """
         Create a new ExampleArgsAction instance.
 
@@ -66,37 +75,48 @@ class HttpTestAction (BunkAction):
 
     def get (self, client):
         """
-        Handle a GET request
-
-        @param client (HttpClient) The HttpClient instance.
+        Return http_test record(s)
         """
+        response = {}
 
         # initialize and connect to database
         db     = self.init_db()
         dbconn = db.get_connection()
         dbcurs = dbconn.cursor()
 
-        # pull record
-        dbcurs.execute(HttpTestAction.sql_get_http_test_record % client.params["id"])
-        record = db.fetch_one(dbcurs)
+        if "id" in client.params:
+            # select a single record
+            sql_query = HttpTestAction.sql_get_http_test_record % client.params["id"]
 
-        # close db connection
-        dbcurs.close()
-        dbconn.close()
+        else:
+            # select all single record
+            sql_query = HttpTestAction.sql_get_all_http_test_record
 
-        response = {"get_params": client.params}
+        try:
+            # pull record
+            dbcurs.execute(sql_query)
 
+            response["items"] = db.fetch_all(dbcurs)
+
+        except Exception, e:
+            # return sql error details
+            self.respond(client, {"sql_error": e})
+
+            return
+
+        finally:
+            # close db connection
+            dbcurs.close()
+            dbconn.close()
+
+        # return resource
         self.respond(client, response)
-
-        #client.write("DB Result: " + str(record))
 
     # ------------------------------------------------------------------------------------------------------------------
 
     def post (self, client):
         """
-        Handle a POST request
-
-        @param client (HttpClient) The HttpClient instance.
+        Create a new http_test record and return the id.
         """
 
         # initialize and connect to database
@@ -114,7 +134,6 @@ class HttpTestAction (BunkAction):
             dbcurs.execute(HttpTestAction.sql_insert_http_test_record % sql_params)
 
             new_record_id = dbcurs.lastrowid
-            print new_record_id
 
         except Exception, e:
             # return sql error details
@@ -126,16 +145,14 @@ class HttpTestAction (BunkAction):
         dbcurs.close()
         dbconn.close()
 
-        # return it
+        # return created record's id
         self.respond(client, new_record_id)
 
     # ------------------------------------------------------------------------------------------------------------------
 
     def put (self, client):
         """
-        Create or update http_test record.
-
-        @param client (HttpClient) The HttpClient instance.
+        Create or update an http_test record.
         """
 
         # initialize and connect to database
