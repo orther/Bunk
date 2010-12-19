@@ -22,7 +22,18 @@ class HttpTestAction (BunkAction):
     INSERT INTO http_test
         (id, route_id, request_ip, created_at)
     VALUES
-        ("%(id)i", "%(route_id)s", "%(request_ip)s", NOW())
+        (%(id)s, "%(route_id)s", "%(request_ip)s", NOW())
+    """
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    sql_update_http_test_record = """
+    UPDATE http_test
+    SET
+        route_id   = "%(route_id)s",
+        request_ip = "%(request_ip)s"
+    WHERE
+        id = %(id)s
     """
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -94,15 +105,17 @@ class HttpTestAction (BunkAction):
         sql_params    = {"id":         int(client.params["id"]),
                          "route_id":   self._route_id,
                          "request_ip": "Fake For Now"}
-        sql_statement = HttpTestAction.sql_insert_http_test_record % sql_params
 
-        dbcurs.execute(sql_statement)
+        try:
+            # attempt to insert new http_test record
+            dbcurs.execute(HttpTestAction.sql_insert_http_test_record % sql_params)
+
+        except Exception, e:
+            # assume insert failed due to duplicate entry so we update the existing record
+            dbcurs.execute(HttpTestAction.sql_update_http_test_record % sql_params)
 
         # close db connection
         dbcurs.close()
         dbconn.close()
 
-        client.compose_headers()
-        client.write("PUT Parameters: " + str(client.params) + "\n")
-        #client.write("DB Result: " + str(record))
-        client.flush()
+        self.respond("PUT Parameters: " + str(client.params) + "\n")
