@@ -22,7 +22,7 @@ class HttpTestAction (BunkAction):
     INSERT INTO http_test
         (id, route_id, request_ip, created_at)
     VALUES
-        (%(id)i, %(route_id)s, %(request_ip)s, NOW())
+        ("%(id)i", "%(route_id)s", "%(request_ip)s", NOW())
     """
 
     # ------------------------------------------------------------------------------------------------------------------
@@ -90,14 +90,13 @@ class HttpTestAction (BunkAction):
         dbconn = db.get_connection()
         dbcurs = dbconn.cursor()
 
-        # pull record
-        sql_params = {"id":         clients.params["id"],
-                      "route_id":   self._route_id,
-                      "request_ip": "Fake For Now"}
+        # insert record
+        sql_params    = {"id":         int(client.params["id"]),
+                         "route_id":   self._route_id,
+                         "request_ip": "Fake For Now"}
+        sql_statement = HttpTestAction.sql_insert_http_test_record % sql_params
 
-        sql = HttpTestAction.sql_insert_http_test_record % client.params["id"]
-
-        dbcurs.execute(sql)
+        dbcurs.execute(sql_statement)
 
         # close db connection
         dbcurs.close()
