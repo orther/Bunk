@@ -118,4 +118,6 @@ class HttpTestAction (BunkAction):
         dbcurs.close()
         dbconn.close()
 
-        self.respond("PUT Parameters: " + str(client.params) + "\n")
+        response = {"sql_params": sql_params, "request params": client.params}
+
+        self.respond(client, response)

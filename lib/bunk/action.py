@@ -6,6 +6,7 @@ from elements.http        import response_code
 from settings import logging_file
 from settings import logging_level
 from settings import logging_on
+from settings import response_formatters
 
 # ----------------------------------------------------------------------------------------------------------------------
 
@@ -28,11 +29,22 @@ class BunkAction (HttpAction):
 
     def format_response_data (self, response_data):
         """
-        Import database module.
+        Format response data to the set format. If no format has been set then the response data is converted to a
+        string.
 
-        @return (module) elements.model.database
+        @param response_data (*) All data types are accepted. If response_data is of a type not supported by the
+                                 response format set then a ResponseFormatException is raised.
+
+        @return (str)
         """
 
+        if self._format == None:
+            return str(response_data)
+
+        if self._format not in response_formatters.keys():
+            raise ResponseFormatException("A response formatter is not registered for the set format: %s" % self._format)
+
+        return response_formatters[self._format].format(response_data)
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -49,18 +61,18 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def respond (self, response_data, block_formating=False):
+    def respond (self, client, response_data, block_formating=False):
         """
         Return a full response to the request including headers and body. Response data is formated using the set
         format.
 
+        @param client (HttpClient)    The HttpClient instance.
         @param response_data   (*)    All data types are accepted. If response_data is of a type not supported by the
-                                      response format a BunkAcception is raised.
+                                      response format ResponseFormatException is raised.
         @param block_formating (bool) If set to True the respopnse data will not be formated by the forma
         """
 
-        # TODO: add mechanism to format response according to request. For example return JSON for requests with .json
-        formated_resp = str(response)
+        formated_resp = self.format_response_data(response_data)
 
         client.compose_headers()
         client.write(formated_resp)

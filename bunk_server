@@ -8,8 +8,10 @@ sys.path.append(os.path.abspath("./lib/Elements/lib/"))
 
 from elements.http.server import RoutingHttpServer
 
+from bunk.core import bunk
+
 from settings import hosts
 from routing  import routes
-hosts
+
 # start the server
 RoutingHttpServer(hosts=hosts, routes=routes).start()
