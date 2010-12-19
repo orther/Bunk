@@ -57,7 +57,7 @@ class HttpTestAction (BunkAction):
     # METHODS
     # ------------------------------------------------------------------------------------------------------------------
 
-    def __init__ (self, route_id=None, **kwargs):
+    def __init__ (self, file_ext=None, **kwargs):
         """
         Create a new ExampleArgsAction instance.
 
@@ -66,7 +66,7 @@ class HttpTestAction (BunkAction):
 
         BunkAction.__init__(self, **kwargs)
 
-        self._route_id = route_id
+        self._file_ext = file_ext
 
         # TODO: set this static for now for testing
         self._format = "json"

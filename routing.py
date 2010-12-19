@@ -1,8 +1,12 @@
 # action imports
 from actions import http_test
 
-# routes
-routes = {
-    "/http_test.json": (http_test.HttpTestAction, {"route_id": "all_json"}),
-    "/http_test":      ("(id:\d+).(format:\w+)", http_test.HttpTestAction, {"route_id": ""})
-}
+# set this to true for debugging
+print_routes = True
+
+file_exts = ('', 'html', 'json')
+
+bunk_routes = (
+    ("/http_test", "(id:\d+)", http_test.HttpTestAction, {}),
+    ("/ht",        None,       http_test.HttpTestAction, {})
+)
