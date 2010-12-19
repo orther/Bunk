@@ -14,9 +14,9 @@ class ResponseFormatter:
         """
 
         if response_data_type not in supported_data_types:
-            e_data = (response_data_type, supported_data_types, self.__class__.__name__)
+            e_msg = "validate_response_data_type() recieved response_data of type `%s` but only supports: %s"
 
-            raise ResponseFormatException("%s recieved response_data of type `%s` but only supports: %s" % e_data)
+            raise ResponseFormatException(e_msg % (response_data_type, supported_data_types))
 
     # ------------------------------------------------------------------------------------------------------------------
 

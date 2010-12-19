@@ -15,7 +15,7 @@ class JsonFormatter (ResponseFormatter):
         @return (str)
         """
 
-        supported_data_types = (str, int, float, list, dict)
+        supported_data_types = (type(None), str, int, long, float, list, dict, bool)
 
         # validate response_data type
         ResponseFormatter.validate_response_data_type(type(response_data), supported_data_types)
