@@ -14,9 +14,9 @@ class HttpTestAction (BunkAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    sql_get_all_http_test_record = """
+    sql_get_all_http_test_records = """
     SELECT
-        id, route_id, request_ip, DATE_FORMAT(created_at, '%%H:%%i:%%s %%W %%M %%Y') as created
+        id, route_id, request_ip, DATE_FORMAT(created_at, '%H:%i:%s %W %M %Y') as created
     FROM
         http_test
     """
@@ -89,8 +89,8 @@ class HttpTestAction (BunkAction):
             sql_query = HttpTestAction.sql_get_http_test_record % client.params["id"]
 
         else:
-            # select all single record
-            sql_query = HttpTestAction.sql_get_all_http_test_record
+            # select all records
+            sql_query = HttpTestAction.sql_get_all_http_test_records
 
         try:
             # pull record
