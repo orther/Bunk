@@ -29,9 +29,11 @@ http_upload_dir         = "/tmp"
 # ----------------------------------------------------------------------------------------------------------------------
 
 from bunk.response_formatters.json_formatter import JsonFormatter
+from bunk.response_formatters.xml_formatter  import XmlFormatter
 
 response_formatters = {
-    "json": JsonFormatter
+    "json": JsonFormatter,
+    "xml": XmlFormatter
 }
 
 # ----------------------------------------------------------------------------------------------------------------------

@@ -69,7 +69,7 @@ class HttpTestAction (BunkAction):
         self._file_ext = file_ext
 
         # TODO: set this static for now for testing
-        self._format = "json"
+        self._format = "xml"
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -77,7 +77,9 @@ class HttpTestAction (BunkAction):
         """
         Return http_test record(s)
         """
-        response = {}
+        response = {
+            "list": (1,2,3,4,5,"test")
+        }
 
         # initialize and connect to database
         db     = self.init_db()
