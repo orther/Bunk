@@ -32,8 +32,8 @@ from bunk.response_formatters.json_formatter import JsonFormatter
 from bunk.response_formatters.xml_formatter  import XmlFormatter
 
 response_formatters = {
-    "json": JsonFormatter,
-    "xml": XmlFormatter
+    ".json": JsonFormatter,
+    ".xml":  XmlFormatter
 }
 
 # ----------------------------------------------------------------------------------------------------------------------

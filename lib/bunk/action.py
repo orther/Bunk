@@ -3,6 +3,8 @@ import logging
 from elements.http.action import HttpAction
 from elements.http        import response_code
 
+from bunk.core.exception import ResponseFormatException
+
 from settings import logging_file
 from settings import logging_level
 from settings import logging_on
@@ -71,6 +73,10 @@ class BunkAction (HttpAction):
                                       response format ResponseFormatException is raised.
         @param format_response (bool) If set to True the respopnse data will be formated by the set ResponseFormatter
         """
+
+        # set format based on filed extension
+        # TODO: Remove this and make a more robust format setter
+        self._format = client.params["_file_ext"]
 
         if format_response:
             # apply response format

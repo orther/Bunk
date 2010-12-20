@@ -77,9 +77,7 @@ class HttpTestAction (BunkAction):
         """
         Return http_test record(s)
         """
-        response = {
-            "list": (1,2,3,4,5,"test")
-        }
+        response = {}
 
         # initialize and connect to database
         db     = self.init_db()
