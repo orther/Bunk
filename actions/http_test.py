@@ -125,7 +125,7 @@ class HttpTestAction (BunkAction):
 
         # insert record
         sql_params = {"id":         "NULL",
-                      "route_id":   self._route_id,
+                      "route_id":   self._file_ext,
                       "request_ip": "Fake For Now"}
 
         try:
@@ -161,7 +161,7 @@ class HttpTestAction (BunkAction):
 
         # insert record
         sql_params = {"id":         int(client.params["id"]),
-                      "route_id":   self._route_id,
+                      "route_id":   self._file_ext,
                       "request_ip": "Fake For Now"}
 
         try:
