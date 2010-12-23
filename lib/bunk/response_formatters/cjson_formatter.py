@@ -1,13 +1,13 @@
 from response_formatter import ResponseFormatter
 
-from json import dumps
+from cjson import encode
 
-class JsonFormatter (ResponseFormatter):
+class CjsonFormatter (ResponseFormatter):
 
     @staticmethod
     def format (response_data):
         """
-        Format response data into JSON using the standard Python json.dumps() function.
+        Format response data into JSON using the cjson modules encode() function.
 
         @param response_data (*) All data types are accepted. If response_data is of a type not supported by the
                                  implemented response format then a ResponseFormatException is raised.
@@ -20,4 +20,4 @@ class JsonFormatter (ResponseFormatter):
         # validate response_data type
         ResponseFormatter.validate_response_data_type(type(response_data), supported_data_types)
 
-        return dumps(response_data)
+        return encode(response_data)

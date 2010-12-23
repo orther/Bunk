@@ -25,8 +25,8 @@ class ResponseFormatter:
         """
         Format response data with to the set _format.
 
-        @param response_data (*) All data types are accepted. If response_data is of a type not supported by the
-                                 implemented response format then a ResponseFormatException is raised.
+        @param response_data           (*)    All data types are accepted. If response_data is of a type not supported
+                                              by the implemented response format then a ResponseFormatException is raised.
 
         @return (str)
         """

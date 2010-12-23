@@ -7,7 +7,8 @@ class XmlFormatter (ResponseFormatter):
         """
         Format response data into XML
 
-        @param response_data (None, str, int, long, float, list, dict, bool)
+        @param response_data           (*) All data types are accepted. If response_data is of a type not supported by
+                                           the implemented response format then a ResponseFormatException is raised.
 
         @return (str)
         """

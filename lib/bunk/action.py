@@ -34,8 +34,8 @@ class BunkAction (HttpAction):
         Format response data to the set format. If no format has been set then the response data is converted to a
         string.
 
-        @param response_data (*) All data types are accepted. If response_data is of a type not supported by the
-                                 response format set then a ResponseFormatException is raised.
+        @param response_data           (*) All data types are accepted. If response_data is of a type not supported by
+                                           the response format set then a ResponseFormatException is raised.
 
         @return (str)
         """
@@ -75,8 +75,8 @@ class BunkAction (HttpAction):
         """
 
         # set format based on filed extension
-        # TODO: Remove this and make a more robust format setter
-        self._format = client.params["_file_ext"]
+        # TODO: Remove this and make a more robust format setter with uptimization setting.
+        self._format = client.params["_file_ext"][1:]
 
         if format_response:
             # apply response format

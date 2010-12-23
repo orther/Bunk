@@ -68,9 +68,6 @@ class HttpTestAction (BunkAction):
 
         self._file_ext = file_ext
 
-        # TODO: set this static for now for testing
-        self._format = "xml"
-
     # ------------------------------------------------------------------------------------------------------------------
 
     def get (self, client):
@@ -84,6 +81,7 @@ class HttpTestAction (BunkAction):
         dbconn = db.get_connection()
         dbcurs = dbconn.cursor()
 
+        # ab benchmarking
         if "id" in client.params and not client.params["id"] == "":
             # select a single record
             sql_query = HttpTestAction.sql_get_http_test_record % client.params["id"]
@@ -96,6 +94,7 @@ class HttpTestAction (BunkAction):
             # pull record
             dbcurs.execute(sql_query)
 
+            # benchmark testing
             response["items"] = db.fetch_all(dbcurs)
 
         except Exception, e:
