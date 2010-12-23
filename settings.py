@@ -2,7 +2,16 @@
 # SERVER
 # ----------------------------------------------------------------------------------------------------------------------
 
-hosts =  [("0.0.0.0", 8080)]
+hosts        = [("0.0.0.0", 8080)]
+long_running = True
+worker_count = 25
+
+# NOTE: this is for debuggin only! do not leave this on
+#
+# This option allows the Bunk server to reload the action module itself per request. This means new code saved to the
+# file will be imported and used for each request. This allows you to debug by editing your code and sending another
+# request rather than restarting the server.
+reload_actions_per_request = True
 
 # ----------------------------------------------------------------------------------------------------------------------
 # HTTP
@@ -28,12 +37,14 @@ http_upload_dir         = "/tmp"
 # RESPONSE FORMATS
 # ----------------------------------------------------------------------------------------------------------------------
 
-from bunk.response_formatters.json_formatter import JsonFormatter
-from bunk.response_formatters.xml_formatter  import XmlFormatter
+from bunk.response_formatters.cjson_formatter import CjsonFormatter
+from bunk.response_formatters.json_formatter  import JsonFormatter
+from bunk.response_formatters.xml_formatter   import XmlFormatter
 
 response_formatters = {
-    ".json": JsonFormatter,
-    ".xml":  XmlFormatter
+    "cjson": CjsonFormatter,
+    "json":  JsonFormatter,
+    "xml":   XmlFormatter
 }
 
 # ----------------------------------------------------------------------------------------------------------------------

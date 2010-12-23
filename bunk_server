@@ -15,9 +15,11 @@ from routing  import bunk_routes
 from routing  import file_exts
 from routing  import print_routes
 from settings import hosts
+from settings import long_running
+from settings import worker_count
 
 # build routes
 routes = build_routes(bunk_routes, file_exts, print_routes)
 
 # start the server
-RoutingHttpServer(hosts=hosts, routes=routes).start()
+RoutingHttpServer(hosts=hosts, routes=routes, long_running=long_running, worker_count=worker_count).start()
