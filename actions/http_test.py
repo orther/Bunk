@@ -126,7 +126,7 @@ class HttpTestAction (BunkAction):
         # insert record
         sql_params = {"id":         "NULL",
                       "route_id":   self._file_ext,
-                      "request_ip": "Fake For Now"}
+                      "request_ip": client.in_headers["REMOTE_ADDR"]}
 
         try:
             # attempt to insert new http_test record
@@ -162,7 +162,7 @@ class HttpTestAction (BunkAction):
         # insert record
         sql_params = {"id":         int(client.params["id"]),
                       "route_id":   self._file_ext,
-                      "request_ip": "Fake For Now"}
+                      "request_ip": client.in_headers["REMOTE_ADDR"]}
 
         try:
             # attempt to insert new http_test record
