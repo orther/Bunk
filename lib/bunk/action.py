@@ -87,5 +87,8 @@ class BunkAction (HttpAction):
             response = response_data
 
         client.compose_headers()
-        client.write(response)
+
+        if type(response) == str:
+            client.write(response)
+
         client.flush()
