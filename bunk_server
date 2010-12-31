@@ -7,9 +7,9 @@ sys.path.append(os.path.abspath("./lib/"))
 
 from bunk.server import BunkServer
 
-from bunk_settings import hosts
-from bunk_settings import long_running
-from bunk_settings import worker_count
+from settings import hosts
+from settings import long_running
+from settings import worker_count
 
 import bunk_routing
 
