@@ -5,10 +5,10 @@ from elements.http        import response_code
 
 from bunk.core.exception import ResponseFormatException
 
-from settings import logging_file
-from settings import logging_level
-from settings import logging_on
-from settings import response_formatters
+from bunk_settings import logging_file
+from bunk_settings import logging_level
+from bunk_settings import logging_on
+from bunk_settings import response_formatters
 
 # ----------------------------------------------------------------------------------------------------------------------
 

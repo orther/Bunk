@@ -7,13 +7,11 @@ sys.path.append(os.path.abspath("./lib/"))
 
 from bunk.server import BunkServer
 
-from routing  import bunk_routes
-from routing  import file_exts
-from routing  import print_routes
-from settings import hosts
-from settings import long_running
-from settings import worker_count
+from bunk_settings import hosts
+from bunk_settings import long_running
+from bunk_settings import worker_count
+
+import bunk_routing
 
 # start the server
-BunkServer(bunk_routes=bunk_routes, file_exts=file_exts, print_routes=print_routes,
-           hosts=hosts, long_running=long_running, worker_count=worker_count).start()
+BunkServer(bunk_routing=bunk_routing, hosts=hosts, long_running=long_running, worker_count=worker_count).start()
