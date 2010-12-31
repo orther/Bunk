@@ -6,6 +6,6 @@ print_routes = True
 
 file_exts = ('cjson', 'json', 'xml')
 
-bunk_routes = (
-    ("/http_test", "(id:\d*)", http_test.HttpTestAction, {}),
-)
+bunk_routes = {
+    "/http_test": ("", http_test.HttpTestAction, "(id:\d*)"),
+}
