@@ -27,6 +27,7 @@ class BunkAction (HttpAction):
 
         self._file_ext = file_ext
         self._format   = None
+        self._response = {}
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -72,8 +73,53 @@ class BunkAction (HttpAction):
         @param client (HttpClient)    The HttpClient instance.
         @param response_data   (*)    All data types are accepted. If response_data is of a type not supported by the
                                       response format ResponseFormatException is raised.
-        @param format_response (bool) If set to True the respopnse data will be formated by the set ResponseFormatter
+        @param format_response (bool) If set to True the respopnse data will be formated by ResponseFormatter
         """
+
+        # put response_data into container
+        response_data = {"response_data": response_data}
+
+        # set format based on filed extension
+        # TODO: Remove this and make a more robust format setter with uptimization setting.
+        if self._file_ext:
+            self._format = self._file_ext[1:]
+
+        else:
+            self._format = client.params["_file_ext"][1:]
+
+        if format_response:
+            # apply response format
+            response = self.format_response_data(response_data)
+
+        else:
+            # do not format
+            response = response_data
+
+        client.compose_headers()
+
+        if type(response) == str:
+            client.write(response)
+
+        client.flush()
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def respond_error (self, client, error_code, error_message="", error_data=None, format_response=True):
+        """
+        Return an error response to the request including headers and body. Response data is formated using the set
+        format.
+
+        @param client          (HttpClient) The HttpClient instance.
+        @param error_code      (int)
+        @param error_code      (int)
+        @param error_data      (*)          All data types are accepted. If response_data is of a type not supported by
+                                            the response format ResponseFormatException is raised.
+        @param format_response (bool)       If set to False the respopnse data will NOT be formated by ResponseFormatter
+        """
+
+        response_data = {"error_data": {"code":    error_code,
+                                        "message": error_message,
+                                        "data":    error_data}}
 
         # set format based on filed extension
         # TODO: Remove this and make a more robust format setter with uptimization setting.

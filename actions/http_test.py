@@ -57,19 +57,6 @@ class HttpTestAction (BunkAction):
     # METHODS
     # ------------------------------------------------------------------------------------------------------------------
 
-    def __init__ (self, file_ext=None, **kwargs):
-        """
-        Create a new ExampleArgsAction instance.
-
-        @param route_id (str) Route identifier set as an argument in the route.
-        """
-
-        BunkAction.__init__(self, **kwargs)
-
-        self._file_ext = file_ext
-
-    # ------------------------------------------------------------------------------------------------------------------
-
     def get (self, client):
         """
         Return http_test record(s)

@@ -1,17 +1,33 @@
 from bunk.action import BunkAction
 
+# ------------------------------------------------------------------------------------------------------------------
+# RESPON ERROR CODES
+# ------------------------------------------------------------------------------------------------------------------
+
+RESP_ERROR_CODE_NO_IMAGE_TEXT_RECEIVED = 1
+
+# ------------------------------------------------------------------------------------------------------------------
+# ACTION CLASS
+# ------------------------------------------------------------------------------------------------------------------
+
 class FbTagImageCreatorAction (BunkAction):
 
     # ------------------------------------------------------------------------------------------------------------------
-    # METHODS
+    # INTERNAL METHODS
     # ------------------------------------------------------------------------------------------------------------------
 
-    def get (self, client):
-        """
-        No action needed so we return empty response.
-        """
+    # ------------------------------------------------------------------------------------------------------------------
+    # REQUEST HANDLERS
+    # ------------------------------------------------------------------------------------------------------------------
 
-        response = {}
+    def post (self, client):
 
-        # return resource
-        self.respond(client, response)
+        if not "image_text" in client.params:
+            # no image_text recieved so respond with error
+            self.respond_error(client, RESP_ERROR_CODE_NO_IMAGE_TEXT_RECEIVED, "No image text received")
+            return
+
+        # create images
+        image_text = client.params["image_text"]
+
+        self.respond(client, {"image_text": image_text});
