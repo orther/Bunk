@@ -14,7 +14,7 @@ from settings import response_formatters
 
 class BunkAction (HttpAction):
 
-    def __init__ (self, **kwargs):
+    def __init__ (self, file_ext=None, **kwargs):
         """
         Create a new HttpAction instance and setup logging if logging is turned on in the settings.
         """
@@ -25,7 +25,8 @@ class BunkAction (HttpAction):
             # setup logging if turned on
             logging.basicConfig(filename=logging_file, level=logging_level)
 
-        self._format = None
+        self._file_ext = file_ext
+        self._format   = None
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -76,7 +77,11 @@ class BunkAction (HttpAction):
 
         # set format based on filed extension
         # TODO: Remove this and make a more robust format setter with uptimization setting.
-        self._format = client.params["_file_ext"][1:]
+        if self._file_ext:
+            self._format = self._file_ext[1:]
+
+        else:
+            self._format = client.params["_file_ext"][1:]
 
         if format_response:
             # apply response format

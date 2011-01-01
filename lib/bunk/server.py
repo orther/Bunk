@@ -9,6 +9,10 @@ from action         import BunkAction
 from core           import bunk
 from core.exception import BunkRoutesException
 
+from settings import hosts
+from settings import long_running
+from settings import worker_count
+
 class BunkServer (RoutingHttpServer):
 
     def __init__ (self, bunk_routing, **kwargs):
@@ -68,7 +72,7 @@ class BunkServer (RoutingHttpServer):
 
             route_path       = route[0]
             route_action     = route[1]
-            route_args       = None
+            route_args       = dict()
             route_validation = None
 
             if type(route_path) != str:
@@ -104,8 +108,12 @@ class BunkServer (RoutingHttpServer):
                 for file_ext in file_exts:
                     static_path = route_path + file_ext
 
+                    # add file_ext arg for static routes
+                    static_route_args = dict(route_args, **{"file_ext": file_ext})
+
                     #add route
-                    elements_routes[static_path] = self.build_elements_route(route_action, route_validation, route_args)
+                    elements_routes[static_path] = self.build_elements_route(route_action, route_validation,
+                                                                             static_route_args)
 
         if print_routes:
             # print route for debugging
