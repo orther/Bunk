@@ -1,3 +1,6 @@
+from os   import mkdir
+from time import time
+
 import Image
 import ImageFont
 import ImageChops
@@ -10,17 +13,19 @@ from bunk.action import BunkAction
 # BANNER SETTINGS
 # ------------------------------------------------------------------------------------------------------------------
 
-banner_color             = "#ffffff"
-banner_num_pieces        = 5
-banner_size              = (485, 68)
-font_file                = "/Users/brandon/Projects/Bunk/actions/VERDANA.TTF"
-font_color               = "#ff0000"
+banner_color      = "#ffffff"
+banner_num_pieces = 5
+banner_size       = (485, 68)
+font_file         = "/Users/brandon/Projects/Bunk/actions/VERDANA.TTF"
+font_color        = "#ff0000"
+storage_path      = "/Users/brandon/Projects/Bunk/actions/fb_tag_images"
+storage_web_path  = "/fb_tag_images"
 
 # ------------------------------------------------------------------------------------------------------------------
 # RESPON ERROR CODES
 # ------------------------------------------------------------------------------------------------------------------
 
-RESP_ERROR_CODE_NO_IMAGE_TEXT_RECEIVED = 1
+RESP_ERROR_CODE_NO_BANNER_TEXT_RECEIVED = 1
 
 # ------------------------------------------------------------------------------------------------------------------
 # ACTION CLASS
@@ -90,19 +95,22 @@ class FbTagImageCreatorAction (BunkAction):
         # NOTE: I should use an Elements model here
 
         # set and validate image text
-        if not "image_text" in client.params:
-            self.respond_error(client, RESP_ERROR_CODE_NO_IMAGE_TEXT_RECEIVED, "No image text received")
+        if not "banner_text" in client.params:
+            self.respond_error(client, RESP_ERROR_CODE_NO_BANNER_TEXT_RECEIVED, "No banner text received")
             return
 
-        storage_path = "/Users/brandon/Projects/Bunk/actions/fb_tag_images"
+        # build storage path
+        unique_dir_name = "%s" % float(time())
+
+        mkdir("%s/%s" % (storage_path, unique_dir_name))
 
         # create images
-        pieces = self._create_banner_pieces(client.params["image_text"], storage_path, file_prefix="fb_image_")
+        pieces = self._create_banner_pieces(client.params["banner_text"], storage_path, file_prefix="fb_image_")
 
         response = {
-            "path":   "fb_tag_images",
+            "path":   "%s/%s" % (storage_web_path, unique_dir_name),
             "pieces": pieces
         }
 
         # respond with image details
-        self.respond(client, response);
+        self.respond(client, response)
