@@ -10,14 +10,10 @@ from bunk.action import BunkAction
 # BANNER SETTINGS
 # ------------------------------------------------------------------------------------------------------------------
 
-banner_color             = "white"
+banner_color             = "#ffffff"
 banner_num_pieces        = 5
-banner_piece_file_prefix = "fb_image_"
-banner_piece_output_path = "/Users/brandon/Projects/Bunk/actions/fb_tag_images"
 banner_size              = (485, 68)
-banner_text              = "EATS COCK!!!"
 font_file                = "/Users/brandon/Projects/Bunk/actions/VERDANA.TTF"
-font_size                = 10
 font_color               = "#ff0000"
 
 # ------------------------------------------------------------------------------------------------------------------
@@ -51,6 +47,7 @@ class FbTagImageCreatorAction (BunkAction):
         banner = Image.new("RGB", banner_size, banner_color)
 
         # load font and calculate font size needed to fit all text
+        font_size    = 20
         font         = ImageFont.truetype(font_file, font_size)
         text_size    = font.getsize(banner_text)
         resize_ratio = min(float(banner_size[0])/text_size[0], float(banner_size[1])/text_size[1])
@@ -70,12 +67,12 @@ class FbTagImageCreatorAction (BunkAction):
         chop_width = banner_size[0] / banner_num_pieces
         chop_box   = (0, 0, chop_width, banner_size[1])
 
-        banner_piece_files = tuple()
+        banner_piece_files = list()
 
         for i in xrange(banner_num_pieces):
-            piece_cords  = (0 * chop_width, 0, chop_width, banner_size[1])
+            piece_cords  = (i * chop_width, 0, chop_width * (i + 1), banner_size[1])
             banner_piece = banner.crop(piece_cords)
-            file_name    = "%s%s.png" % (file_prefix, i + 1)
+            file_name    = "%s%s.png" % (file_prefix, banner_num_pieces - i)
 
             # write banner piece image to disk
             banner_piece.save("%s/%s" % (storage_path, file_name), "PNG")
@@ -97,10 +94,15 @@ class FbTagImageCreatorAction (BunkAction):
             self.respond_error(client, RESP_ERROR_CODE_NO_IMAGE_TEXT_RECEIVED, "No image text received")
             return
 
-        image_text = client.params["image_text"]
+        storage_path = "/Users/brandon/Projects/Bunk/actions/fb_tag_images"
 
         # create images
-        image_details = {"image_text": image_text}
+        pieces = self._create_banner_pieces(client.params["image_text"], storage_path, file_prefix="fb_image_")
+
+        response = {
+            "path":   "fb_tag_images",
+            "pieces": pieces
+        }
 
         # respond with image details
-        self.respond(client, image_details);
+        self.respond(client, response);
