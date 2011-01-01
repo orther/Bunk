@@ -16,10 +16,10 @@ from bunk.action import BunkAction
 banner_color      = "#ffffff"
 banner_num_pieces = 5
 banner_size       = (485, 68)
-font_file         = "/Users/brandon/Projects/Bunk/actions/VERDANA.TTF"
+font_file         = "/home/brandon/projects/Bunk/VERDANA.TTF"
 font_color        = "#ff0000"
-storage_path      = "/Users/brandon/Projects/Bunk/actions/fb_tag_images"
-storage_web_path  = "/fb_tag_images"
+storage_path      = "/var/www/think-done/www/files/fb_images"
+storage_web_path  = "/files/fb_images"
 
 # ------------------------------------------------------------------------------------------------------------------
 # RESPON ERROR CODES
@@ -100,12 +100,13 @@ class FbTagImageCreatorAction (BunkAction):
             return
 
         # build storage path
-        unique_dir_name = "%s" % float(time())
+        unique_dir_name     = "%s" % float(time())
+        unique_storage_path = "%s/%s" % (storage_path, unique_dir_name)
 
-        mkdir("%s/%s" % (storage_path, unique_dir_name))
+        mkdir(unique_storage_path)
 
         # create images
-        pieces = self._create_banner_pieces(client.params["banner_text"], storage_path, file_prefix="fb_image_")
+        pieces = self._create_banner_pieces(client.params["banner_text"], unique_storage_path, file_prefix="fb_image_")
 
         response = {
             "path":   "%s/%s" % (storage_web_path, unique_dir_name),
