@@ -13,5 +13,6 @@ bunk_routes = (
     #                  ("/posts/spanish/", blog.PostsAction, "(post_id:\d+)", {"translate": True, "lang": "spanish"}),
 
     # http test routes
+    ("/http_test", http_test.HttpTestAction),
     ("/http_test", http_test.HttpTestAction, "(id:\d*)"),
 )
