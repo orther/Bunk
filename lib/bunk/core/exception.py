@@ -13,9 +13,3 @@ class BunkRoutesException (BunkException):
 class BunkServerException (BunkException):
 
     pass
-
-# ----------------------------------------------------------------------------------------------------------------------
-
-class ResponseFormatException (BunkException):
-
-    pass

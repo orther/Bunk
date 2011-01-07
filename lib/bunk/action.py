@@ -1,54 +1,178 @@
-import logging
-
 from elements.http.action import HttpAction
 from elements.http        import response_code
-
-from bunk.core.exception import ResponseFormatException
-
-from settings import logging_file
-from settings import logging_level
-from settings import logging_on
-from settings import response_formatters
 
 # ----------------------------------------------------------------------------------------------------------------------
 
 class BunkAction (HttpAction):
 
-    def __init__ (self, file_ext=None, **kwargs):
+    def __init__ (self, server, file_ext=None, title="Method Not Allowed", response_code=response_code.HTTP_405):
         """
-        Create a new HttpAction instance and setup logging if logging is turned on in the settings.
+        Create a new BunkAction instance.
+
+        @param server   (HttpServer) The HttpServer instance.
+        @param file_ext (str)
         """
 
-        HttpAction.__init__(self, **kwargs)
+        self._client             = None
+        self._file_ext           = file_ext
+        self._response_formatter = None
+        self._server             = server
 
-        if logging_on:
-            # setup logging if turned on
-            logging.basicConfig(filename=logging_file, level=logging_level)
+        # unhandle request method defaults
+        self.__response_code     = response_code
+        self.__title             = title
 
-        self._file_ext = file_ext
-        self._format   = None
-        self._response = {}
+        self._setup()
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def format_response_data (self, response_data):
+    def _setup (self):
         """
-        Format response data to the set format. If no format has been set then the response data is converted to a
-        string.
-
-        @param response_data           (*) All data types are accepted. If response_data is of a type not supported by
-                                           the response format set then a ResponseFormatException is raised.
-
-        @return (str)
+        This method can be overwritten in the inheriting action to allow for setup on a per action bases. I am currently
+        using this to allow the response format to be set per action.
         """
 
-        if self._format == None:
-            return str(response_data)
+        return
 
-        if self._format not in response_formatters.keys():
-            raise ResponseFormatException("A response formatter is not registered for the set format: %s" % self._format)
+    # ------------------------------------------------------------------------------------------------------------------
 
-        return response_formatters[self._format].format(response_data)
+    def bunk_connect (self):
+        """
+        Handle a CONNECT request.
+        """
+
+        self._client.response_code = self.__response_code
+
+        self.respond(self.__title)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def bunk_delete (self):
+        """
+        Handle a DELETE request.
+        """
+
+        self._client.response_code = self.__response_code
+
+        self.respond(self.__title)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def bunk_get (self):
+        """
+        Handle a GET request.
+        """
+
+        self._client.response_code = self.__response_code
+
+        self.respond(self.__title)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def bunk_head (self):
+        """
+        Handle a HEAD request.
+        """
+
+        self._client.response_code = self.__response_code
+
+        self.respond(self.__title)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def bunk_options (self):
+        """
+        Handle a OPTIONS request.
+        """
+
+        self._client.response_code = self.__response_code
+
+        self.respond(self.__title)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def bunk_post (self):
+        """
+        Handle a POST request.
+        """
+
+        self._client.response_code = self.__response_code
+
+        self.respond(self.__title)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def bunk_put (self):
+        """
+        Handle a PUT request.
+        """
+
+        self._client.response_code = self.__response_code
+
+        self.respond(self.__title)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def bunk_trace (self):
+        """
+        Handle a TRACE request.
+        """
+
+        self._client.response_code = self.__response_code
+
+        self.respond(self.__title)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def connect (self, client):
+        """
+        Handle a CONNECT request and pass it to bunk_connect.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self._client = client
+
+        self.bunk_connect()
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def delete (self, client):
+        """
+        Handle a DELETE request and pass it to bunk_delete.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self._client = client
+
+        self.bunk_delete()
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def get (self, client):
+        """
+        Handle a GET request and pass it to bunk_get.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self._client = client
+
+        self.bunk_get()
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def head (self, client):
+        """
+        Handle a HEAD request and pass it to bunk_head.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self._client = client
+
+        self.bunk_head()
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -65,51 +189,79 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def respond (self, client, response_data, format_response=True):
+    def options (self, client):
+        """
+        Handle a OPTIONS request and pass it to bunk_options.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self._client = client
+
+        self.bunk_options()
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def post (self, client):
+        """
+        Handle a POST request and pass it to bunk_post.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self._client = client
+
+        self.bunk_post()
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def put (self, client):
+        """
+        Handle a PUT request pass it to bunk_put.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self._client = client
+
+        self.bunk_put()
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def respond (self, response_data, format_response=True):
         """
         Return a full response to the request including headers and body. Response data is formated using the set
-        format.
+        response formatter.
 
-        @param client (HttpClient)    The HttpClient instance.
-        @param response_data   (*)    All data types are accepted. If response_data is of a type not supported by the
-                                      response format ResponseFormatException is raised.
+        @param response_data
         @param format_response (bool) If set to True the respopnse data will be formated by ResponseFormatter
         """
 
         # put response_data into container
         response_data = {"response_data": response_data}
 
-        # set format based on filed extension
-        # TODO: Remove this and make a more robust format setter with uptimization setting.
-        if self._file_ext:
-            self._format = self._file_ext[1:]
-
-        else:
-            self._format = client.params["_file_ext"][1:]
-
         if format_response:
             # apply response format
-            response = self.format_response_data(response_data)
+            response = self._response_formatter.format(response_data)
 
         else:
             # do not format
             response = response_data
 
-        client.compose_headers()
+        self._client.compose_headers()
 
         if type(response) == str:
-            client.write(response)
+            self._client.write(response)
 
-        client.flush()
+        self._client.flush()
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def respond_error (self, client, error_code, error_message="", error_data=None, format_response=True):
+    def respond_error (self, error_code, error_message="", error_data=None, format_response=True):
         """
         Return an error response to the request including headers and body. Response data is formated using the set
         format.
 
-        @param client          (HttpClient) The HttpClient instance.
         @param error_code      (int)
         @param error_code      (int)
         @param error_data      (*)          All data types are accepted. If response_data is of a type not supported by
@@ -121,25 +273,30 @@ class BunkAction (HttpAction):
                                         "message": error_message,
                                         "data":    error_data}}
 
-        # set format based on filed extension
-        # TODO: Remove this and make a more robust format setter with uptimization setting.
-        if self._file_ext:
-            self._format = self._file_ext[1:]
-
-        else:
-            self._format = client.params["_file_ext"][1:]
-
         if format_response:
             # apply response format
-            response = self.format_response_data(response_data)
+            response = self._response_formatter.format(response_data)
 
         else:
             # do not format
             response = response_data
 
-        client.compose_headers()
+        self._client.compose_headers()
 
         if type(response) == str:
-            client.write(response)
+            self._client.write(response)
 
-        client.flush()
+        self._client.flush()
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def trace (self, client):
+        """
+        Handle a TRACE request pass it to bunk_trace.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self._client = client
+
+        self.bunk_trace()

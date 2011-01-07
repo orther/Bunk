@@ -9,6 +9,8 @@ import ImageEnhance
 
 from bunk.action import BunkAction
 
+from bunk.response_formatters.json_formatter  import JsonFormatter
+
 # ------------------------------------------------------------------------------------------------------------------
 # BANNER SETTINGS
 # ------------------------------------------------------------------------------------------------------------------
@@ -35,6 +37,15 @@ class FbTagImageCreatorAction (BunkAction):
 
     # ------------------------------------------------------------------------------------------------------------------
     # INTERNAL METHODS
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def _setup (self):
+        """
+        Set response formatter.
+        """
+
+        self._response_formatter = JsonFormatter
+
     # ------------------------------------------------------------------------------------------------------------------
 
     def _create_banner_pieces (self, banner_text, storage_path, file_prefix=None):
@@ -90,23 +101,25 @@ class FbTagImageCreatorAction (BunkAction):
     # REQUEST HANDLERS
     # ------------------------------------------------------------------------------------------------------------------
 
-    def post (self, client):
+    def bunk_post (self):
 
         # NOTE: I should use an Elements model here
 
         # set and validate image text
-        if not "banner_text" in client.params:
-            self.respond_error(client, RESP_ERROR_CODE_NO_BANNER_TEXT_RECEIVED, "No banner text received")
+        if not "banner_text" in self._client.params:
+            self.respond_error(RESP_ERROR_CODE_NO_BANNER_TEXT_RECEIVED, "No banner text received")
             return
 
         # build storage path
         unique_dir_name     = "%s" % float(time())
         unique_storage_path = "%s/%s" % (storage_path, unique_dir_name)
 
+        print "TEST>>>>>"
         mkdir(unique_storage_path)
 
         # create images
-        pieces = self._create_banner_pieces(client.params["banner_text"], unique_storage_path, file_prefix="fb_image_")
+        pieces = self._create_banner_pieces(self._client.params["banner_text"], unique_storage_path,
+                                            file_prefix="fb_image_")
 
         response = {
             "path":   "%s/%s" % (storage_web_path, unique_dir_name),
@@ -114,4 +127,4 @@ class FbTagImageCreatorAction (BunkAction):
         }
 
         # respond with image details
-        self.respond(client, response)
+        self.respond(response)

@@ -11,6 +11,7 @@ from core.exception import BunkRoutesException
 
 from settings import hosts
 from settings import long_running
+from settings import print_routes
 from settings import worker_count
 
 class BunkServer (RoutingHttpServer):
@@ -22,7 +23,7 @@ class BunkServer (RoutingHttpServer):
         @param bunk_routing (module)
         """
 
-        routes = self.build_elements_routes(bunk_routing.bunk_routes, bunk_routing.file_exts, bunk_routing.print_routes)
+        routes = self.build_elements_routes(bunk_routing.bunk_routes, bunk_routing.file_exts, print_routes)
 
         RoutingHttpServer.__init__(self, routes=routes, **kwargs)
 

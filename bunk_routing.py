@@ -1,12 +1,9 @@
-# set this to true for debugging
-print_routes = True
-
-# file extensions
-file_exts = ('json', 'xml')
-
 # actions
 from actions import http_test
 from actions import fb_tag_images_creator
+
+# file extensions
+file_exts = ('json', 'xml')
 
 # Bunk routes
 bunk_routes = (
