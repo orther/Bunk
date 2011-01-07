@@ -178,9 +178,9 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def init_db (self):
+    def get_db (self):
         """
-        Import database module.
+        Import database module and return it.
 
         @return (module) elements.model.database
         """
@@ -251,16 +251,14 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def respond_error (self, error_code, error_message="", error_data=None, format_response=True):
+    def respond_error (self, error_code, error_message="", error_data=None):
         """
         Return an error response to the request including headers and body. Response data is formated using the set
         format.
 
-        @param error_code      (int)
-        @param error_code      (int)
-        @param error_data      (*)          All data types are accepted. If response_data is of a type not supported by
-                                            the response format ResponseFormatException is raised.
-        @param format_response (bool)       If set to False the respopnse data will NOT be formated by ResponseFormatter
+        @param error_code (int)
+        @param error_code (int)
+        @param error_data (dict)
         """
 
         response_data = {"error_data": {"code":    error_code,
