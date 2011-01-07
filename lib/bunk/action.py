@@ -1,6 +1,8 @@
 from elements.http.action import HttpAction
 from elements.http        import response_code
 
+from bunk.response_formatters.response_formatter import ResponseFormatter
+
 # ----------------------------------------------------------------------------------------------------------------------
 
 class BunkAction (HttpAction):
@@ -15,7 +17,7 @@ class BunkAction (HttpAction):
 
         self._client             = None
         self._file_ext           = file_ext
-        self._response_formatter = None
+        self._response_formatter = ResponseFormatter
         self._server             = server
 
         # unhandle request method defaults
@@ -91,7 +93,7 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_post (self):
+    def bunk_post (self, **kwargs):
         """
         Handle a POST request.
         """
@@ -240,13 +242,8 @@ class BunkAction (HttpAction):
         # put response_data into container
         response_data = {"response_data": response_data}
 
-        if format_response:
-            # apply response format
-            response = self._response_formatter.format(response_data)
-
-        else:
-            # do not format
-            response = response_data
+        # apply response format
+        response = self._response_formatter.format(response_data)
 
         self._client.compose_headers()
 
@@ -273,13 +270,8 @@ class BunkAction (HttpAction):
                                         "message": error_message,
                                         "data":    error_data}}
 
-        if format_response:
-            # apply response format
-            response = self._response_formatter.format(response_data)
-
-        else:
-            # do not format
-            response = response_data
+        # apply response format
+        response = self._response_formatter.format(response_data)
 
         self._client.compose_headers()
 

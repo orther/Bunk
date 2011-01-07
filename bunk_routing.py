@@ -1,9 +1,8 @@
 # actions
 from actions import http_test
-from actions import fb_tag_images_creator
 
 # file extensions
-file_exts = ('json', 'xml')
+file_exts = ('json',)
 
 # Bunk routes
 bunk_routes = (
@@ -15,7 +14,4 @@ bunk_routes = (
 
     # http test routes
     ("/http_test", http_test.HttpTestAction, "(id:\d*)"),
-
-    # facebook image creator routes
-    ("/facebook/5_recent_images_creator", fb_tag_images_creator.FbTagImageCreatorAction),
 )
