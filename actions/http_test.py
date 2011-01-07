@@ -57,7 +57,7 @@ class HttpTestAction (BunkAction):
     # METHODS
     # ------------------------------------------------------------------------------------------------------------------
 
-    def get (self, client):
+    def bunk_get (self):
         """
         Return http_test record(s)
         """
@@ -69,9 +69,9 @@ class HttpTestAction (BunkAction):
         dbcurs = dbconn.cursor()
 
         # ab benchmarking
-        if "id" in client.params and not client.params["id"] == "":
+        if "id" in self._client.params and not self._client.params["id"] == "":
             # select a single record
-            sql_query = HttpTestAction.sql_get_http_test_record % client.params["id"]
+            sql_query = HttpTestAction.sql_get_http_test_record % self._client.params["id"]
 
         else:
             # select all records
@@ -86,7 +86,7 @@ class HttpTestAction (BunkAction):
 
         except Exception, e:
             # return sql error details
-            self.respond(client, {"sql_error": e})
+            self.respond({"sql_error": e})
 
             return
 
@@ -96,11 +96,11 @@ class HttpTestAction (BunkAction):
             dbconn.close()
 
         # return resource
-        self.respond(client, response)
+        self.respond(response)
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def post (self, client):
+    def bunk_post (self):
         """
         Create a new http_test record and return the id.
         """
@@ -113,7 +113,7 @@ class HttpTestAction (BunkAction):
         # insert record
         sql_params = {"id":         "NULL",
                       "route_id":   self._file_ext,
-                      "request_ip": client.in_headers["REMOTE_ADDR"]}
+                      "request_ip": self._client.in_headers["REMOTE_ADDR"]}
 
         try:
             # attempt to insert new http_test record
@@ -123,7 +123,7 @@ class HttpTestAction (BunkAction):
 
         except Exception, e:
             # return sql error details
-            self.respond(client, {"sql_error": e})
+            self.respond({"sql_error": e})
 
             return
 
@@ -132,11 +132,11 @@ class HttpTestAction (BunkAction):
         dbconn.close()
 
         # return created record's id
-        self.respond(client, new_record_id)
+        self.respond(new_record_id)
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def put (self, client):
+    def bunk_put (self):
         """
         Create or update an http_test record.
         """
@@ -147,9 +147,9 @@ class HttpTestAction (BunkAction):
         dbcurs = dbconn.cursor()
 
         # insert record
-        sql_params = {"id":         int(client.params["id"]),
+        sql_params = {"id":         int(self._client.params["id"]),
                       "route_id":   self._file_ext,
-                      "request_ip": client.in_headers["REMOTE_ADDR"]}
+                      "request_ip": self._client.in_headers["REMOTE_ADDR"]}
 
         try:
             # attempt to insert new http_test record
@@ -162,7 +162,7 @@ class HttpTestAction (BunkAction):
 
             except Exception, e:
                 # return sql error details
-                self.respond(client, {"sql_error": e})
+                self.respond({"sql_error": e})
 
                 return
 
@@ -171,4 +171,4 @@ class HttpTestAction (BunkAction):
         dbconn.close()
 
         # return empty body on success
-        self.respond(client, None, False)
+        self.respond(None, False)
