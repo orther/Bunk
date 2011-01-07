@@ -1,4 +1,5 @@
-from bunk.action import BunkAction
+from bunk.action                              import BunkAction
+from bunk.response_formatters.json_formatter  import JsonFormatter
 
 class HttpTestAction (BunkAction):
 
@@ -55,6 +56,15 @@ class HttpTestAction (BunkAction):
 
     # ------------------------------------------------------------------------------------------------------------------
     # METHODS
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def _setup (self):
+        """
+        Set response formatter.
+        """
+
+        self._response_formatter = JsonFormatter
+
     # ------------------------------------------------------------------------------------------------------------------
 
     def bunk_get (self):
