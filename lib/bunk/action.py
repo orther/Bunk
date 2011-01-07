@@ -239,9 +239,6 @@ class BunkAction (HttpAction):
         @param format_response (bool) If set to True the respopnse data will be formated by ResponseFormatter
         """
 
-        # put response_data into container
-        response_data = {"response_data": response_data}
-
         # apply response format
         response = self._response_formatter.format(response_data)
 
