@@ -32,16 +32,16 @@ http_upload_dir         = "/tmp"
 # DATABASE
 # ----------------------------------------------------------------------------------------------------------------------
 
-import MySQLdb
+import psycopg2
 
 databases = {
     "default": {
-        "host":   "localhost",
-        "user":   "bunk",
-        "passwd": "RESTing",
-        "db":     "bunk_db",
-        "pool":   2,
-        "api":    MySQLdb
+        "host":     "localhost",
+        "user":     "bunk",
+        "password": "RESTing",
+        "database": "bunk",
+        "pool":     2,
+        "api":      psycopg2
     }
 }
 
