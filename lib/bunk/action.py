@@ -19,8 +19,6 @@ class BunkAction (HttpAction):
         self._file_ext           = file_ext
         self._response_formatter = ResponseFormatter
         self._server             = server
-
-        # unhandle request method defaults
         self.__response_code     = response_code
         self.__title             = title
 
@@ -230,17 +228,22 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def respond (self, response_data, format_response=True):
+    def respond (self, response_data, http_response_code=None, format_response=True):
         """
         Return a full response to the request including headers and body. Response data is formated using the set
-        response formatter.
+        response formatter. If an http_response_code is provide it is set before the headers are composed.
 
         @param response_data
-        @param format_response (bool) If set to True the respopnse data will be formated by ResponseFormatter
+        @param http_response_code (str)
+        @param format_response    (bool) If set to True the respopnse data will be formated by ResponseFormatter
         """
 
         # apply response format
         response = self._response_formatter.format(response_data)
+
+        if not http_response_code == None:
+            # set HTTP response code
+            self._client.response_code = http_response_code
 
         self._client.compose_headers()
 
@@ -251,19 +254,20 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def respond_error (self, error_code, error_message, error_data=None, field_errors=None):
+    def respond_error (self, error_code, error_message, http_response_code, error_data=None, field_errors=None):
         """
         Return an error response to the request including headers and body. Response data is formated using the set
-        formatter.
+        formatter. The HTTP response code is set before the headers are composed.
 
         NOTE: This method is in place to assert a structure for all error data being returned by bunk web service.
 
-        @param error_code    (int)
-        @param error_message (int)
-        @param error_data    (dict)
-        @param field_errors  (list) A list containing field specific errors. Each field error item is a tuple with the
-                                    first item being the field name and the second item being field error data.
-                                    Example: [('username', 'Already in use!'), ('password', 'Too short!')]
+        @param error_code         (int)
+        @param error_message      (int)
+        @param http_response_code (str)
+        @param error_data         (dict)
+        @param field_errors       (list) A list containing field specific errors. Each field error item is a tuple with
+                                         the first item being the field name and the second item being field error data.
+                                         Example: [('username', 'Already in use!'), ('password', 'Too short!')]
         """
 
         response_data = {"error_data": {"code":    error_code,
@@ -277,6 +281,9 @@ class BunkAction (HttpAction):
 
         # apply response format
         response = self._response_formatter.format(response_data)
+
+        # set HTTP response code
+        self._client.response_code = http_response_code
 
         self._client.compose_headers()
 
