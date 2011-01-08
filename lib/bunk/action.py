@@ -251,19 +251,25 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def respond_error (self, error_code, error_message="", error_data=None):
+    def respond_error (self, error_code, error_message="", error_data=None, field_errors=None):
         """
         Return an error response to the request including headers and body. Response data is formated using the set
-        format.
+        formatter.
 
-        @param error_code (int)
-        @param error_code (int)
-        @param error_data (dict)
+        NOTE: This method is in place to assert a standard structure for error data being returned by bunk web service.
+
+        @param error_code    (int)
+        @param error_message (int)
+        @param error_data    (dict)
+        @param field_errors  (list) A list containing field specific errors. Each field error item is a tuple with the
+                                    first item being the field name and the second item being field error data.
+                                    Example: [('username', 'Already in use!'), ('password', 'Too short!')]
         """
 
-        response_data = {"error_data": {"code":    error_code,
-                                        "message": error_message,
-                                        "data":    error_data}}
+        response_data = {"error_data": {"code":         error_code,
+                                        "message":      error_message,
+                                        "data":         error_data,
+                                        "field_errors": field_errors}}
 
         # apply response format
         response = self._response_formatter.format(response_data)
