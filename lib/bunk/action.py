@@ -265,9 +265,9 @@ class BunkAction (HttpAction):
         @param error_message      (int)
         @param http_response_code (str)
         @param error_data         (dict)
-        @param field_errors       (list) A list containing field specific errors. Each field error item is a tuple with
+        @param field_errors       (list) A list containing field specific errors. Each field error item is a list with
                                          the first item being the field name and the second item being field error data.
-                                         Example: [('username', 'Already in use!'), ('password', 'Too short!')]
+                                         Example: [['username', 'Already in use!'], ['password', 'Too short!']]
         """
 
         response_data = {"error_data": {"code":    error_code,
