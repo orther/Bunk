@@ -1,7 +1,6 @@
 from datetime import datetime
 
-from elements.core.exception import DatabaseModelException
-from elements.http           import response_code
+from elements.http import response_code
 
 from bunk.action                              import BunkAction
 from bunk.response_formatters.json_formatter  import JsonFormatter

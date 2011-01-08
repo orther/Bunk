@@ -1,9 +1,20 @@
 from datetime import datetime
 
+from elements.http import response_code
+
 from bunk.action                              import BunkAction
 from bunk.response_formatters.json_formatter  import JsonFormatter
 
 from models.user import UserDBModel
+
+# ----------------------------------------------------------------------------------------------------------------------
+# RESPONSE ERROR CODES
+# ----------------------------------------------------------------------------------------------------------------------
+
+RESP_ERR_CODE_AUTHENTICATION_FAILED = 1
+RESP_ERR_CODE_LOGIN_FAILED          = 2
+
+# ----------------------------------------------------------------------------------------------------------------------
 
 class UsersLoginAction (BunkAction):
 
@@ -22,20 +33,45 @@ class UsersLoginAction (BunkAction):
 
     def bunk_post (self):
         """
-        Authenticate a user and return user_id and set session cookie on success.
+        Authenticate a user in using username and password and start a session.
+
+        @request_param username (str)
+        @request_param password (str)
+
+        @response user_id (int)
         """
 
-        user            = UserDBModel()
-        user.password   = "cocks4PASSES"
-        user.username   = "dick"
-        user.email      = "brandon.orther@gmail.com"
+        password_hash = UserDBModel.hash_password(self._client.params.get("password"))
+        username      = self._client.params.get("username")
 
-        print "Validated:", user.validate()
-        print "Errors:", user.errors()
+        try:
+            users = UserDBModel.filter([["username", "=", username], ["password_hash", "=", password_hash]]).limit(1)()
 
-        # save the user
-        user.save()
+            if users:
+                # user loaded
+                user = users[0]
 
-        print user.values()
+                # update last log in date
+                user.date_last_log_in = "@NOW()"
 
-        self.respond({"user_id": 1})
+                user.save()
+
+                # start session
+                print "start session here"
+
+            else:
+                # failed to authenticate
+                err_code = RESP_ERR_CODE_AUTHENTICATION_FAILED
+                err_msg  = "Login credentials provided failed to authenticate."
+
+                return self.respond_error(err_code, err_msg, response_code.HTTP_500)
+
+        except Exception, e:
+            # failed to log user in for unknown reason
+            err_code = RESP_ERR_CODE_LOGIN_FAILED
+            err_msg  = "User log in failed for unknown reason."
+
+            return self.respond_error(err_code, err_msg, response_code.HTTP_500)
+
+        # user successfully logged in
+        return self.respond({"user_id": user.user_id}, response_code.HTTP_200)
