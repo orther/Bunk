@@ -116,7 +116,7 @@ class HttpTestAction (BunkAction):
         """
 
         # initialize and connect to database
-        db     = self.init_db()
+        db     = self.get_db()
         dbconn = db.get_connection()
         dbcurs = dbconn.cursor()
 
@@ -152,7 +152,7 @@ class HttpTestAction (BunkAction):
         """
 
         # initialize and connect to database
-        db     = self.init_db()
+        db     = self.get_db()
         dbconn = db.get_connection()
         dbcurs = dbconn.cursor()
 
