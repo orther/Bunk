@@ -1,9 +1,10 @@
 # actions
 from actions import http_test
 
-from actions.users import login  as users_login
-from actions.users import create as users_create
-
+from actions.users import create  as users_create
+from actions.users import details as users_details
+from actions.users import login   as users_login
+from actions.users import logout  as users_logout
 
 # file extensions
 file_exts = ('json',)
@@ -24,5 +25,7 @@ bunk_routes = (
     # users routes
     ("/users/create", users_create.UsersCreateAction),
     ("/users/login",  users_login.UsersLoginAction),
+    ("/users/logout", users_logout.UsersLogoutAction),
+    ("/users",        users_details.UsersDetailsAction, "(username:\w+)"),
 
 )
