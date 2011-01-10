@@ -80,7 +80,6 @@ class UsersLoginAction (BunkAction):
                 return self.respond_error(err_code, err_msg, response_code.HTTP_500)
 
         except Exception, e:
-            print e
             # failed to log user in for unknown reason
             err_code = RESP_ERR_CODE_LOGIN_FAILED
             err_msg  = "User log in failed for unknown reason."

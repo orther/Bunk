@@ -80,7 +80,6 @@ class UsersDetailsAction (BunkAction):
             return self.respond_access_denied()
 
         except Exception, e:
-            print e
             # allow admin failed to log user in for unknown reason
             err_code = RESP_ERR_CODE_USER_DETAILS_FAILED
             err_msg  = "User failed to load for unknown reason."
