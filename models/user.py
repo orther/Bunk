@@ -26,6 +26,8 @@ class UserModel (Model):
     date_created     = Datetime("Date Created", required=False)
     date_last_log_in = Datetime("Last Log In At", required=False)
 
+# ----------------------------------------------------------------------------------------------------------------------
+
 class UserDBModel (DatabaseModel):
 
     model = UserModel
