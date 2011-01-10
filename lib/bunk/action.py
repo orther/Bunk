@@ -4,6 +4,13 @@ from elements.http        import response_code
 from bunk.core.exception                         import BunkServerException
 from bunk.response_formatters.response_formatter import ResponseFormatter
 
+
+# ----------------------------------------------------------------------------------------------------------------------
+# RESPONSE ERROR CODES
+# ----------------------------------------------------------------------------------------------------------------------
+
+RESP_ERR_CODE_ACCESS_DENIED = 70
+
 # ----------------------------------------------------------------------------------------------------------------------
 
 class BunkAction (HttpAction):
@@ -37,6 +44,17 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
+    def auth_empty_roles (self):
+        """
+        Remove any authenticated roles.
+        """
+
+        self._client.session["__auth_roles__"] = None
+
+        del self._client.session["__auth_roles__"]
+
+    # ------------------------------------------------------------------------------------------------------------------
+
     @property
     def auth_roles (self):
         """
@@ -45,16 +63,7 @@ class BunkAction (HttpAction):
         @return (tuple)
         """
 
-        return self._client.session.get("__auth_roles__", None)
-
-    # ------------------------------------------------------------------------------------------------------------------
-
-    def auth_empty_roles (self):
-        """
-        Remove any authenticated roles.
-        """
-
-        self._client.session["__auth_roles__"] = None
+        return self._client.session.get("__auth_roles__", ())
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -289,6 +298,18 @@ class BunkAction (HttpAction):
             self._client.write(response)
 
         self._client.flush()
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def respond_access_denied (self):
+        """
+        Return an error response indicating that access has been denied.
+        """
+
+        err_code = RESP_ERR_CODE_ACCESS_DENIED
+        err_msg  = "Access denied."
+
+        return self.respond_error(err_code, err_msg, response_code.HTTP_403)
 
     # ------------------------------------------------------------------------------------------------------------------
 

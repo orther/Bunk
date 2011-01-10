@@ -7,6 +7,8 @@ from bunk.response_formatters.json_formatter import JsonFormatter
 
 from models.user import UserDBModel
 
+from settings import AUTH_ROLE_USER
+
 # ----------------------------------------------------------------------------------------------------------------------
 # RESPONSE ERROR CODES
 # ----------------------------------------------------------------------------------------------------------------------
@@ -63,14 +65,12 @@ class UsersLoginAction (BunkAction):
                 user.save()
 
                 # store user details in session
-                self._client.session["user"] = {
-                    "user_id":  user.user_id,
-                    "username": user.username,
-                    "email":    user.email
-                }
+                self._client.session["user_id"]  = user.user_id
+                self._client.session["username"] = user.username
+                self._client.session["email"]    = user.email
 
                 # set session auth roles
-                self.auth_set_roles(("user",))
+                self.auth_set_roles((AUTH_ROLE_USER,))
 
             else:
                 # failed to authenticate

@@ -29,8 +29,14 @@ class UsersLogoutAction (BunkAction):
         self.auth_empty_roles()
 
         # remove user details
-        if self._client.session.get("user", False):
-            del self._client.session["user"]
+        if self._client.session.get("email", False):
+            del self._client.session["email"]
+
+        if self._client.session.get("user_id", False):
+            del self._client.session["user_id"]
+
+        if self._client.session.get("username", False):
+            del self._client.session["username"]
 
         # user successfully logged out
         return self.respond(True)
