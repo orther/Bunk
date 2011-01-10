@@ -33,7 +33,7 @@ class UsersDetailsAction (BunkAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_get (self):
+    def bunk_get (self, client):
         """
         Retrieve details for a user.
 
@@ -48,7 +48,7 @@ class UsersDetailsAction (BunkAction):
 
         try:
             users_filters = [
-                ["username",      "=", self._client.params.get("username")],
+                ["username",      "=", client.params.get("username")],
                 ["is_deleted",    "=", False]
             ]
 
@@ -57,7 +57,7 @@ class UsersDetailsAction (BunkAction):
             if users:
                 user = users[0]
 
-                if is_admin or user.user_id == self._client.session.get("user_id"):
+                if is_admin or user.user_id == client.session.get("user_id"):
                     # build reponse
                     response = {
                         "user_id":  user.user_id,

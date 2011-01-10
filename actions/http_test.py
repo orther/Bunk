@@ -67,7 +67,7 @@ class HttpTestAction (BunkAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_get (self):
+    def bunk_get (self, client):
         """
         Return http_test record(s)
         """
@@ -79,9 +79,9 @@ class HttpTestAction (BunkAction):
         dbcurs = dbconn.cursor()
 
         # ab benchmarking
-        if "id" in self._client.params and not self._client.params["id"] == "":
+        if "id" in client.params and not client.params["id"] == "":
             # select a single record
-            sql_query = HttpTestAction.sql_get_http_test_record % self._client.params["id"]
+            sql_query = HttpTestAction.sql_get_http_test_record % client.params["id"]
 
         else:
             # select all records
@@ -110,7 +110,7 @@ class HttpTestAction (BunkAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_post (self):
+    def bunk_post (self, client):
         """
         Create a new http_test record and return the id.
         """
@@ -123,7 +123,7 @@ class HttpTestAction (BunkAction):
         # insert record
         sql_params = {"id":         "NULL",
                       "route_id":   self._file_ext,
-                      "request_ip": self._client.in_headers["REMOTE_ADDR"]}
+                      "request_ip": client.in_headers["REMOTE_ADDR"]}
 
         try:
             # attempt to insert new http_test record
@@ -146,7 +146,7 @@ class HttpTestAction (BunkAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_put (self):
+    def bunk_put (self, client):
         """
         Create or update an http_test record.
         """
@@ -157,9 +157,9 @@ class HttpTestAction (BunkAction):
         dbcurs = dbconn.cursor()
 
         # insert record
-        sql_params = {"id":         int(self._client.params["id"]),
+        sql_params = {"id":         int(client.params["id"]),
                       "route_id":   self._file_ext,
-                      "request_ip": self._client.in_headers["REMOTE_ADDR"]}
+                      "request_ip": client.in_headers["REMOTE_ADDR"]}
 
         try:
             # attempt to insert new http_test record

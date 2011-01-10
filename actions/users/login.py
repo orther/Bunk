@@ -33,7 +33,7 @@ class UsersLoginAction (BunkAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_post (self):
+    def bunk_post (self, client):
         """
         Log a user in.
 
@@ -43,8 +43,8 @@ class UsersLoginAction (BunkAction):
         @response user_id (int)
         """
 
-        password_hash = UserDBModel.hash_password(self._client.params.get("password"))
-        username      = self._client.params.get("username")
+        password_hash = UserDBModel.hash_password(client.params.get("password"))
+        username      = client.params.get("username")
 
         try:
             users_filters = [
@@ -65,9 +65,9 @@ class UsersLoginAction (BunkAction):
                 user.save()
 
                 # store user details in session
-                self._client.session["user_id"]  = user.user_id
-                self._client.session["username"] = user.username
-                self._client.session["email"]    = user.email
+                client.session["user_id"]  = user.user_id
+                client.session["username"] = user.username
+                client.session["email"]    = user.email
 
                 # set session auth roles
                 self.auth_set_roles((AUTH_ROLE_USER,))

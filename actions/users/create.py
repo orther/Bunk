@@ -34,7 +34,7 @@ class UsersCreateAction (BunkAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_post (self):
+    def bunk_post (self, client):
         """
         Create a user and return user_id.
 
@@ -47,9 +47,9 @@ class UsersCreateAction (BunkAction):
 
         user = UserDBModel()
 
-        user.email    = self._client.params.get("email")
-        user.password = str(self._client.params.get("password"))
-        user.username = self._client.params.get("username")
+        user.email    = client.params.get("email")
+        user.password = str(client.params.get("password"))
+        user.username = client.params.get("username")
 
         if user.validate():
             try:
@@ -93,6 +93,6 @@ class UsersCreateAction (BunkAction):
             return self.respond_error(err_code, err_msg, response_code.HTTP_400, field_errors=field_errs)
 
         # user successfully created
-        self._client.out_headers["Location"] = "%s/users/%s.json" % (app_url_base, user.user_id)
+        client.out_headers["Location"] = "%s/users/%s.json" % (app_url_base, user.user_id)
 
         return self.respond({"user_id": user.user_id}, response_code.HTTP_201)

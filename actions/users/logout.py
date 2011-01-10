@@ -20,7 +20,7 @@ class UsersLogoutAction (BunkAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_get (self):
+    def bunk_get (self, client):
         """
         Log a user out.
         """
@@ -29,14 +29,14 @@ class UsersLogoutAction (BunkAction):
         self.auth_empty_roles()
 
         # remove user details
-        if self._client.session.get("email", False):
-            del self._client.session["email"]
+        if client.session.get("email", False):
+            del client.session["email"]
 
-        if self._client.session.get("user_id", False):
-            del self._client.session["user_id"]
+        if client.session.get("user_id", False):
+            del client.session["user_id"]
 
-        if self._client.session.get("username", False):
-            del self._client.session["username"]
+        if client.session.get("username", False):
+            del client.session["username"]
 
         # user successfully logged out
         return self.respond(True)
