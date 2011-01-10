@@ -83,7 +83,7 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_connect (self):
+    def bunk_connect (self, client):
         """
         Handle a CONNECT request.
         """
@@ -94,7 +94,7 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_delete (self):
+    def bunk_delete (self, client):
         """
         Handle a DELETE request.
         """
@@ -105,7 +105,7 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_get (self):
+    def bunk_get (self, client):
         """
         Handle a GET request.
         """
@@ -116,7 +116,7 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_head (self):
+    def bunk_head (self, client):
         """
         Handle a HEAD request.
         """
@@ -127,7 +127,7 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_options (self):
+    def bunk_options (self, client):
         """
         Handle a OPTIONS request.
         """
@@ -138,7 +138,7 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_post (self, **kwargs):
+    def bunk_post (self, client):
         """
         Handle a POST request.
         """
@@ -149,7 +149,7 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_put (self):
+    def bunk_put (self, client):
         """
         Handle a PUT request.
         """
@@ -160,7 +160,7 @@ class BunkAction (HttpAction):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def bunk_trace (self):
+    def bunk_trace (self, client):
         """
         Handle a TRACE request.
         """
@@ -180,7 +180,7 @@ class BunkAction (HttpAction):
 
         self._client = client
 
-        self.bunk_connect()
+        self.bunk_connect(client)
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -193,7 +193,7 @@ class BunkAction (HttpAction):
 
         self._client = client
 
-        self.bunk_delete()
+        self.bunk_delete(client)
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -206,7 +206,7 @@ class BunkAction (HttpAction):
 
         self._client = client
 
-        self.bunk_get()
+        self.bunk_get(client)
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -219,7 +219,7 @@ class BunkAction (HttpAction):
 
         self._client = client
 
-        self.bunk_head()
+        self.bunk_head(client)
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -245,7 +245,7 @@ class BunkAction (HttpAction):
 
         self._client = client
 
-        self.bunk_options()
+        self.bunk_options(client)
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -258,7 +258,7 @@ class BunkAction (HttpAction):
 
         self._client = client
 
-        self.bunk_post()
+        self.bunk_post(client)
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -271,7 +271,7 @@ class BunkAction (HttpAction):
 
         self._client = client
 
-        self.bunk_put()
+        self.bunk_put(client)
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -362,4 +362,19 @@ class BunkAction (HttpAction):
 
         self._client = client
 
-        self.bunk_trace()
+        self.bunk_trace(client)
+
+# ----------------------------------------------------------------------------------------------------------------------
+
+class SecureBunkAction (HttpAction):
+
+    def get (self, client):
+        """
+        Handle a GET request and pass it to bunk_get.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self._client = client
+
+        self.bunk_get()
