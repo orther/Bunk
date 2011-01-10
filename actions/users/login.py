@@ -2,8 +2,8 @@ from datetime import datetime
 
 from elements.http import response_code
 
-from bunk.action                              import BunkAction
-from bunk.response_formatters.json_formatter  import JsonFormatter
+from bunk.action                             import BunkAction
+from bunk.response_formatters.json_formatter import JsonFormatter
 
 from models.user import UserDBModel
 
@@ -33,7 +33,7 @@ class UsersLoginAction (BunkAction):
 
     def bunk_post (self):
         """
-        Authenticate a user in using username and password and start a session.
+        Log a user in.
 
         @request_param username (str)
         @request_param password (str)
@@ -45,7 +45,13 @@ class UsersLoginAction (BunkAction):
         username      = self._client.params.get("username")
 
         try:
-            users = UserDBModel.filter([["username", "=", username], ["password_hash", "=", password_hash]]).limit(1)()
+            users_filters = [
+                ["username",      "=", username],
+                ["password_hash", "=", password_hash],
+                ["is_deleted",    "=", False]
+            ]
+
+            users = UserDBModel.filter(users_filters).limit(1)()
 
             if users:
                 # user loaded
@@ -56,8 +62,15 @@ class UsersLoginAction (BunkAction):
 
                 user.save()
 
-                # start session
-                print "start session here"
+                # store user details in session
+                self._client.session["user"] = {
+                    "user_id":  user.user_id,
+                    "username": user.username,
+                    "email":    user.email
+                }
+
+                # set session auth roles
+                self.auth_set_roles(("user",))
 
             else:
                 # failed to authenticate
@@ -67,6 +80,7 @@ class UsersLoginAction (BunkAction):
                 return self.respond_error(err_code, err_msg, response_code.HTTP_500)
 
         except Exception, e:
+            print e
             # failed to log user in for unknown reason
             err_code = RESP_ERR_CODE_LOGIN_FAILED
             err_msg  = "User log in failed for unknown reason."

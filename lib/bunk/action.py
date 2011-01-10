@@ -1,6 +1,7 @@
 from elements.http.action import HttpAction
 from elements.http        import response_code
 
+from bunk.core.exception                         import BunkServerException
 from bunk.response_formatters.response_formatter import ResponseFormatter
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -33,6 +34,43 @@ class BunkAction (HttpAction):
         """
 
         return
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    @property
+    def auth_roles (self):
+        """
+        Retrieve authenticated roles.
+
+        @return (tuple)
+        """
+
+        return self._client.session.get("__auth_roles__", None)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def auth_empty_roles (self):
+        """
+        Remove any authenticated roles.
+        """
+
+        self._client.session["__auth_roles__"] = None
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def auth_set_roles (self, auth_roles):
+        """
+        Set the authenticated roles.
+
+        @param auth_roles (tuple) A tuple of roles associated with this session.
+        """
+
+        if type(auth_roles) == tuple:
+            self._client.session["__auth_roles__"] = auth_roles
+
+            return
+
+        raise BunkServerException("Invalid auth roles: %s" % auth_roles)
 
     # ------------------------------------------------------------------------------------------------------------------
 
