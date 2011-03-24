@@ -1,10 +1,11 @@
 from elements.http import response_code
 
-from bunk.action                             import BunkAction
+from bunk.action                             import SecureBunkAction
 from bunk.response_formatters.json_formatter import JsonFormatter
 
 from models.user import UserDBModel
 
+from settings import AUTH_ROLE_USER
 from settings import AUTH_ROLE_ADMIN
 
 # ----------------------------------------------------------------------------------------------------------------------
@@ -18,7 +19,7 @@ RESP_ERR_CODE_USER_DOES_NOT_EXIST = 3
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-class UsersDetailsAction (BunkAction):
+class UsersDetailsAction (SecureBunkAction):
 
     # ------------------------------------------------------------------------------------------------------------------
     # METHODS
@@ -30,6 +31,9 @@ class UsersDetailsAction (BunkAction):
         """
 
         self._response_formatter = JsonFormatter
+
+        # set allowed auth roles
+        self.set_allowed_auth_roles((AUTH_ROLE_USER, AUTH_ROLE_ADMIN))
 
     # ------------------------------------------------------------------------------------------------------------------
 

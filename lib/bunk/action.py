@@ -74,18 +74,18 @@ class BunkAction (HttpAction):
         @param auth_roles (tuple) A tuple of roles associated with this session.
         """
 
-        if type(auth_roles) == tuple:
-            self._client.session["__auth_roles__"] = auth_roles
+        if not type(auth_roles) == tuple:
+            raise BunkServerException("Invalid auth roles: %s" % auth_roles)
 
-            return
-
-        raise BunkServerException("Invalid auth roles: %s" % auth_roles)
+        self._client.session["__auth_roles__"] = auth_roles
 
     # ------------------------------------------------------------------------------------------------------------------
 
     def bunk_connect (self, client):
         """
         Handle a CONNECT request.
+
+        @param client (HttpClient) The HttpClient instance.
         """
 
         self._client.response_code = self.__response_code
@@ -97,6 +97,8 @@ class BunkAction (HttpAction):
     def bunk_delete (self, client):
         """
         Handle a DELETE request.
+
+        @param client (HttpClient) The HttpClient instance.
         """
 
         self._client.response_code = self.__response_code
@@ -108,6 +110,8 @@ class BunkAction (HttpAction):
     def bunk_get (self, client):
         """
         Handle a GET request.
+
+        @param client (HttpClient) The HttpClient instance.
         """
 
         self._client.response_code = self.__response_code
@@ -119,6 +123,8 @@ class BunkAction (HttpAction):
     def bunk_head (self, client):
         """
         Handle a HEAD request.
+
+        @param client (HttpClient) The HttpClient instance.
         """
 
         self._client.response_code = self.__response_code
@@ -130,6 +136,8 @@ class BunkAction (HttpAction):
     def bunk_options (self, client):
         """
         Handle a OPTIONS request.
+
+        @param client (HttpClient) The HttpClient instance.
         """
 
         self._client.response_code = self.__response_code
@@ -141,6 +149,8 @@ class BunkAction (HttpAction):
     def bunk_post (self, client):
         """
         Handle a POST request.
+
+        @param client (HttpClient) The HttpClient instance.
         """
 
         self._client.response_code = self.__response_code
@@ -152,6 +162,8 @@ class BunkAction (HttpAction):
     def bunk_put (self, client):
         """
         Handle a PUT request.
+
+        @param client (HttpClient) The HttpClient instance.
         """
 
         self._client.response_code = self.__response_code
@@ -163,6 +175,8 @@ class BunkAction (HttpAction):
     def bunk_trace (self, client):
         """
         Handle a TRACE request.
+
+        @param client (HttpClient) The HttpClient instance.
         """
 
         self._client.response_code = self.__response_code
@@ -366,15 +380,142 @@ class BunkAction (HttpAction):
 
 # ----------------------------------------------------------------------------------------------------------------------
 
-class SecureBunkAction (HttpAction):
+class SecureBunkAction (BunkAction):
 
-    def get (self, client):
+    def __init__ (self, **kwargs):
         """
-        Handle a GET request and pass it to bunk_get.
+        Create a new BunkAction instance.
+        """
+
+        self.__allowed_auth_roles = ()
+
+        BunkAction.__init__(self, **kwargs)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def connect (self, client):
+        """
+        Handle a CONNECT request.
 
         @param client (HttpClient) The HttpClient instance.
         """
 
-        self._client = client
+        self.secure_action(client)
 
-        self.bunk_get()
+        BunkAction.connect(self, client)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def delete (self, client):
+        """
+        Handle a DELETE request.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self.secure_action(client)
+
+        BunkAction.delete(self, client)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def get (self, client):
+        """
+        Handle a GET request.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self.secure_action(client)
+
+        BunkAction.get(self, client)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def head (self, client):
+        """
+        Handle a HEAD request.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self.secure_action(client)
+
+        BunkAction.head(self, client)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def options (self, client):
+        """
+        Handle a OPTIONS request.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self.secure_action(client)
+
+        BunkAction.options(self, client)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def post (self, client):
+        """
+        Handle a POST request.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self.secure_action(client)
+
+        BunkAction.post(self, client)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def put (self, client):
+        """
+        Handle a PUT request.
+
+        @param client (HttpClient) The HttpClient instance.
+        """
+
+        self.secure_action(client)
+
+        BunkAction.put(self, client)
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def secure_action (self, client):
+        """
+        Enforce action auth conditions.
+        """
+
+        if not set(self.__allowed_auth_roles).intersection(client.session.get("__auth_roles__", ())):
+            # access denied
+            self._client = client
+
+            self.respond_access_denied()
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def set_allowed_auth_roles (self, auth_roles):
+        """
+        Set auth roles allowed access to this action.
+
+        @param auth_roles (tuple)
+        """
+
+        if not type(auth_roles) == tuple:
+            raise BunkServerException("Invalid auth roles: %s" % auth_roles)
+
+        self.__allowed_auth_roles = auth_roles
+
+    # ------------------------------------------------------------------------------------------------------------------
+
+    def trace (self, client):
+        """
+        Handle a TRACE request.
+        """
+
+        self.secure_action(client)
+
+        BunkAction.trace(self, client)
