@@ -27,5 +27,16 @@ bunk_routes = (
     ("/users/login",  users_login.UsersLoginAction),
     ("/users/logout", users_logout.UsersLogoutAction),
     ("/users",        users_details.UsersDetailsAction, "(username:\w+)"),
-
 )
+
+element_routes = [
+    # http test routes
+    ["/http_test",         None,       http_test.HttpTestAction],
+    ["/http_test_pattern", "(id:\d*)", http_test.HttpTestAction],
+
+    # users routes
+    ["/users/create", None,             users_create.UsersCreateAction],
+    ["/users/login",  None,             users_login.UsersLoginAction],
+    ["/users/logout", None,             users_logout.UsersLogoutAction],
+    ["/users",        "(username:\w+)", users_details.UsersDetailsAction]
+]

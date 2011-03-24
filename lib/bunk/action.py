@@ -311,8 +311,6 @@ class BunkAction (HttpAction):
         if type(response) == str:
             self._client.write(response)
 
-        self._client.flush()
-
     # ------------------------------------------------------------------------------------------------------------------
 
     def respond_access_denied (self):
@@ -362,8 +360,6 @@ class BunkAction (HttpAction):
 
         if type(response) == str:
             self._client.write(response)
-
-        self._client.flush()
 
     # ------------------------------------------------------------------------------------------------------------------
 

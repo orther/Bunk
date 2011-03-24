@@ -15,5 +15,5 @@ from settings import daemonize
 import bunk_routing
 
 # start the server
-BunkServer(bunk_routing=bunk_routing, hosts=hosts, long_running=long_running, worker_count=worker_count,
-           daemonize=daemonize).start()
+BunkServer(bunk_routing=bunk_routing, hosts=hosts).start()
+#, long_running=long_running, worker_count=worker_count, daemonize=daemonize).start()

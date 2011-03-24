@@ -23,9 +23,13 @@ class BunkServer (RoutingHttpServer):
         @param bunk_routing (module)
         """
 
-        routes = self.build_elements_routes(bunk_routing.bunk_routes, bunk_routing.file_exts, print_routes)
+        #routes = self.build_elements_routes(bunk_routing.bunk_routes, bunk_routing.file_exts, print_routes)
 
-        RoutingHttpServer.__init__(self, routes=routes, **kwargs)
+        #RoutingHttpServer.__init__(self, routes=routes, **kwargs)
+
+        self.print_routes(bunk_routing.element_routes)
+
+        RoutingHttpServer.__init__(self, routes=bunk_routing.element_routes, **kwargs)
 
     # ------------------------------------------------------------------------------------------------------------------
 
@@ -45,7 +49,7 @@ class BunkServer (RoutingHttpServer):
         @return (dict)
         """
 
-        elements_routes = {}
+        elements_routes = []
 
         if type(file_exts) != tuple or len(file_exts) < 1:
             raise BunkRoutesException("`file_exts` must be an instance of (tuple) with at least 1 item")
@@ -102,7 +106,8 @@ class BunkServer (RoutingHttpServer):
                 route_validation += file_exts_regex
 
                 # add route
-                elements_routes[route_path] = self.build_elements_route(route_action, route_validation, route_args)
+                elements_routes.append(self.build_elements_route(route_path, route_action, route_validation,
+                                                                 route_args))
 
             else:
                 # static path based route
@@ -113,8 +118,8 @@ class BunkServer (RoutingHttpServer):
                     static_route_args = dict(route_args, **{"file_ext": file_ext})
 
                     #add route
-                    elements_routes[static_path] = self.build_elements_route(route_action, route_validation,
-                                                                             static_route_args)
+                    elements_routes.append(self.build_elements_route(route_path, route_action, route_validation,
+                                                                     static_route_args))
 
         if print_routes:
             # print route for debugging
@@ -124,10 +129,11 @@ class BunkServer (RoutingHttpServer):
 
     # ------------------------------------------------------------------------------------------------------------------
 
-    def build_elements_route (self, action, validation, route_args):
+    def build_elements_route (self, route_path, action, validation, route_args):
         """
         Build an Elements route.
 
+        @param route_path (str)
         @param action     (HttpAction)
         @param validation (str/None)
         @param route_args (dict/None)
@@ -135,10 +141,15 @@ class BunkServer (RoutingHttpServer):
         @return (tuple)
         """
 
+        return [route_path, validation, action, route_args]
+
         route = []
 
         if not validation == None:
             route.append(validation)
+
+        ["/validate", "(number:\d+)/(word:\w+)", ExampleValidatingAction, {"sentence": "Hello, world! This is ExampleArgsAction!"}]
+
 
         route.append(action)
 
@@ -158,5 +169,5 @@ class BunkServer (RoutingHttpServer):
 
         print "Elements routes:"
 
-        for path, details in elements_routes.iteritems():
-            print path, details
+        for route in elements_routes:
+            print route
