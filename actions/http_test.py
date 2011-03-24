@@ -71,10 +71,11 @@ class HttpTestAction (BunkAction):
         """
         Return http_test record(s)
         """
+
         response = {}
 
         # initialize and connect to database
-        db     = self.init_db()
+        db     = self.get_db()
         dbconn = db.get_connection()
         dbcurs = dbconn.cursor()
 
