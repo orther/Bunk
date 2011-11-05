@@ -1,3 +1,8 @@
+# This file is part of Bunk.
+# Copyright (c) 2011 Brandon Orther. All rights reserved.
+#
+# The full license is available in the LICENSE file that was distributed with this source code.
+
 from bunk.action                              import BunkAction
 from bunk.response_formatters.json_formatter  import JsonFormatter
 
@@ -63,6 +68,7 @@ class HttpTestAction (BunkAction):
         Set response formatter.
         """
 
+		# this is a test
         self._response_formatter = JsonFormatter
 
     # ------------------------------------------------------------------------------------------------------------------
